@@ -20,15 +20,9 @@ class BlogResource extends JsonResource
             'title' => $this->title,
             'body' => $this->body,
             'user_id' => $this->user_id,
+            'categories' => $this->Category,
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s')
         ];
     }
 }
-
-// 'category' => [
-//     'id' => $this->Category->id,
-//     'name' => $this->Category->name,
-//     'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
-//     'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s')
-// ],

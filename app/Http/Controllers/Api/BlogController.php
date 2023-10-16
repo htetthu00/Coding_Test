@@ -11,7 +11,7 @@ class BlogController extends Controller
 {
     public function index()
     {
-        return BlogResource::collection(Blog::all());    
+        return BlogResource::collection(Blog::with('Category:id,name')->paginate(10));    
     }
 
     public function store(Request $request)
@@ -39,7 +39,7 @@ class BlogController extends Controller
 
     public function show($id)
     {
-        $blog = Blog::where('id', $id)->first();
+        $blog = Blog::with('Category:id,name')->where('id', $id)->first();
 
         if(is_null($blog)) {
             return response()->json([
@@ -53,15 +53,6 @@ class BlogController extends Controller
 
     public function update(Request $request, $id)
     {
-        $attributes = $request->validate([
-            'title' => 'nullable',
-            'body' => 'nullable',
-            'user_id' => 'nullable',
-            'categories' => 'nullable'
-        ]);
-
-        dd($attributes);
-
         $blog = Blog::where('id', $id)->first();
 
         if(is_null($blog)) {
@@ -69,6 +60,12 @@ class BlogController extends Controller
                 'status' => 404,
                 'message' => 'Blog not found.'
             ]);
+        }
+
+        if($request->categories) {
+            $categories = $request->categories;
+
+            $blog->Category()->sync($categories);
         }
 
         $blog->update($request->only('title', 'body'));
@@ -81,6 +78,20 @@ class BlogController extends Controller
 
     public function destroy($id)
     {
-        
+        $blog = Blog::where('id', $id)->first();
+
+        if(is_null($blog)) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Blog not found.'
+            ]);
+        }
+
+        $blog->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Blog successfully deleted.'
+        ]);
     }
 }

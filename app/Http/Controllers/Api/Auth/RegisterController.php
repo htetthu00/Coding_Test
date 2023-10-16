@@ -14,8 +14,7 @@ class RegisterController extends Controller
 
         return response()->json([
             'status' => 200, 
-            'message' => 'User successfully registered.',
-            'token' => $user->createToken($user->name)->plainTextToken
+            'message' => 'User successfully registered.'
         ]);
     }
 }
