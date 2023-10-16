@@ -20,12 +20,12 @@ class LoginController extends Controller
 
         $user = User::where('email', $loginRequest['email'])->first();
 
-        $token = $token = $user->createToken($user->name)->plainTextToken;
+        $token = $token = $user->createToken($user->username)->plainTextToken;
 
         return response()->json([
             'status' => 200,
+            'message' => 'Successfully logged in.',
             'token' => $token,
-            'message' => 'Successfully logged in.'
         ]);
     }
 }

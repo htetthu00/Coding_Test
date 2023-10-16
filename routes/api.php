@@ -8,7 +8,10 @@ use App\Http\Controllers\Api\BlogController;
 Route::group([
     'middleware' => 'auth:sanctum'
 ], function () {
-    Route::resource('blogs', BlogController::class);
+    Route::get('blogs', [BlogController::class, 'index']);
+    Route::post('blogs', [BlogController::class, 'store']);
+    Route::patch('blogs/{blog}', [BlogController::class, 'update']);
+    //Route::resource('blogs', BlogController::class);
 });
 
 Route::post('/auth/register', [RegisterController::class, 'register']);

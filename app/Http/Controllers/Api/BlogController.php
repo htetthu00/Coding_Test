@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -55,15 +56,22 @@ class BlogController extends Controller
     {
         $blog = Blog::where('id', $id)->first();
 
+        if(auth('sanctum')->user()->id !== $blog->user_id) {
+            return response()->json([
+                'status' => 403,
+                'message' => 'Forbidden'
+            ]);
+        }
+
         if(is_null($blog)) {
             return response()->json([
                 'status' => 404,
                 'message' => 'Blog not found.'
             ]);
         }
-
+   
         if($request->categories) {
-            $categories = $request->categories;
+            $categories = explode(',', $request->categories);
 
             $blog->Category()->sync($categories);
         }

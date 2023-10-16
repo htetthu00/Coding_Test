@@ -14,8 +14,8 @@ class BlogCategoryFactory extends Factory
     public function definition()
     {
         return [
-            'blog_id' => rand(1, 10),
-            'category_id' => rand(1, 15)
+            'blog_id' => rand(1, 15),
+            'category_id' => rand(1, 5)
         ];
     }
 }

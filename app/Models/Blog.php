@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Blog extends Model
 {
@@ -21,5 +22,8 @@ class Blog extends Model
         return $this->belongsToMany(Category::class);
     }
 
-
+    public function User() 
+    {
+        return $this->belongsTo(User::class);    
+    }
 }

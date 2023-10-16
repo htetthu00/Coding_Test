@@ -22,8 +22,8 @@ class CreateBlogCategoryTable extends Migration
                 ->on('blogs')->onDelete('cascade');
             $table->foreign('category_id')->references('id')
                 ->on('categories')->onDelete('cascade');
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+            $table->timestamps();//->default(DB::raw('CURRENT_TIMESTAMP'));
+            // $table->timestamp('updated_at');//->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });
     }
 

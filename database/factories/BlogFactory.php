@@ -16,7 +16,7 @@ class BlogFactory extends Factory
         return [
             'title' => $this->faker->company(),
             'body' => $this->faker->text(),
-            'user_id' => rand(1, 10)
+            'user_id' => rand(1, 5)
         ];
     }
 }
