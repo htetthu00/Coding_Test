@@ -16,10 +16,11 @@ class CreateBlogsTable extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug');
             $table->text('body');
             $table->foreignId('user_id');
             $table->foreign('user_id')->references('id')
-            ->on('users')->onDelete('cascade');
+                ->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

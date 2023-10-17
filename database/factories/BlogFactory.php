@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BlogFactory extends Factory
@@ -13,8 +14,11 @@ class BlogFactory extends Factory
      */
     public function definition()
     {
+        $name = $this->faker->company();
+
         return [
-            'title' => $this->faker->company(),
+            'title' => $name,
+            'slug' => Str::slug($name),
             'body' => $this->faker->text(),
             'user_id' => rand(1, 5)
         ];

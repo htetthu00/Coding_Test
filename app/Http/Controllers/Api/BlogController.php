@@ -6,12 +6,19 @@ use App\Models\Blog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BlogResource;
+use Carbon\Carbon;
 
 class BlogController extends Controller
 {
     public function index()
     {
-        return BlogResource::collection(Blog::with('Category:id,name')->paginate(10))->additional(['result' => 1, 'message' => 'Success']);    
+        if(auth('sanctum')->user()) {
+            return BlogResource::collection(Blog::with('Category:id,name')->paginate(10))
+                ->additional(['result' => 1, 'message' => 'Success']); 
+        } else {
+            return BlogResource::collection(Blog::with('Category:id,name')->orderBy('created_at', 'DESC')->paginate(10))
+                ->additional(['result' => 1, 'message' => 'Success']);
+        }
     }
 
     public function store(Request $request)
@@ -39,20 +46,26 @@ class BlogController extends Controller
         // ]);
     }
 
-    public function show($id)
+    public function show($slug)
     {
-        $blog = Blog::with('Category:id,name')->where('id', $id)->first();
+        $blog = Blog::with('Category:id,name')->where('slug', $slug)->first();
 
         if(is_null($blog)) {
-            // return response()->json([
-            //     'status' => 404,
-            //     'message' => 'Blog not found.'
-            // ]);
-
             return fail('Sorry, Your blog cannot be found.', null , 404 );
         }
 
-        return (new BlogResource($blog))->additional(['result' => 1, 'status' => 200, 'message' => 'Success']);
+        if(auth('sanctum')->user()) {
+            return (new BlogResource($blog))->additional(['result' => 1, 'status' => 200, 'message' => 'Success']);
+        } else {
+            $data = [
+                'title' => $blog->title,
+                'slug' => $blog->slug,
+                'created_at' => Carbon::parse($blog->created_at)->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::parse($blog->updated_at)->format('Y-m-d H:i:s')
+            ];
+
+            return success('Success. For more details, please login', $data, 200);
+        }
     }
 
     public function update(Request $request, $id)
