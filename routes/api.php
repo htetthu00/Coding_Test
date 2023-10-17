@@ -10,8 +10,9 @@ Route::group([
 ], function () {
     Route::get('blogs', [BlogController::class, 'index']);
     Route::post('blogs', [BlogController::class, 'store']);
-    Route::patch('blogs/{blog}', [BlogController::class, 'update']);
-    //Route::resource('blogs', BlogController::class);
+    Route::get('blogs/{id}', [BlogController::class, 'show']);
+    Route::patch('blogs/{id}', [BlogController::class, 'update']);
+    Route::delete('blogs/{id}', [BlogController::class, 'destroy']);
 });
 
 Route::post('/auth/register', [RegisterController::class, 'register']);

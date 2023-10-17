@@ -19,7 +19,7 @@ class Blog extends Model
     
     public function Category()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class)->withTimestamps();
     }
 
     public function User() 

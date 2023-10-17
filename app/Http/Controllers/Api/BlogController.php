@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use Carbon\Carbon;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,7 +11,7 @@ class BlogController extends Controller
 {
     public function index()
     {
-        return BlogResource::collection(Blog::with('Category:id,name')->paginate(10));    
+        return BlogResource::collection(Blog::with('Category:id,name')->paginate(10))->additional(['result' => 1, 'message' => 'Success']);    
     }
 
     public function store(Request $request)
@@ -32,10 +31,12 @@ class BlogController extends Controller
 
         $blog->Category()->attach($categories);
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Blog successfully created.'
-        ]);
+        return success('Your blog is successfully created', $blog, 200);
+
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => 'Blog successfully created.'
+        // ]);
     }
 
     public function show($id)
@@ -43,31 +44,37 @@ class BlogController extends Controller
         $blog = Blog::with('Category:id,name')->where('id', $id)->first();
 
         if(is_null($blog)) {
-            return response()->json([
-                'status' => 404,
-                'message' => 'Blog not found.'
-            ]);
+            // return response()->json([
+            //     'status' => 404,
+            //     'message' => 'Blog not found.'
+            // ]);
+
+            return fail('Sorry, Your blog cannot be found.', null , 404 );
         }
 
-        return new BlogResource($blog);
+        return (new BlogResource($blog))->additional(['result' => 1, 'status' => 200, 'message' => 'Success']);
     }
 
     public function update(Request $request, $id)
     {
         $blog = Blog::where('id', $id)->first();
 
-        if(auth('sanctum')->user()->id !== $blog->user_id) {
-            return response()->json([
-                'status' => 403,
-                'message' => 'Forbidden'
-            ]);
+        if(is_null($blog)) {
+            return fail('Sorry, Your blog cannot be found.', null , 404 );
+
+            // return response()->json([
+            //     'status' => 404,
+            //     'message' => 'Blog not found.'
+            // ]);
         }
 
-        if(is_null($blog)) {
-            return response()->json([
-                'status' => 404,
-                'message' => 'Blog not found.'
-            ]);
+        if(auth('sanctum')->user()->id !== $blog->user_id) {
+            return fail('Sorry, You have no permission to update this blog.', null , 403 );
+
+            // return response()->json([
+            //     'status' => 403,
+            //     'message' => 'Forbidden'
+            // ]);
         }
    
         if($request->categories) {
@@ -76,12 +83,14 @@ class BlogController extends Controller
             $blog->Category()->sync($categories);
         }
 
-        $blog->update($request->only('title', 'body'));
+        $blog = $blog->update($request->only('title', 'body'));
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Blog successfully updated.'
-        ]);
+        return success('Your blog is successfully updated', $blog, 200);
+
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => 'Blog successfully updated.'
+        // ]);
     }
 
     public function destroy($id)
@@ -89,17 +98,28 @@ class BlogController extends Controller
         $blog = Blog::where('id', $id)->first();
 
         if(is_null($blog)) {
-            return response()->json([
-                'status' => 404,
-                'message' => 'Blog not found.'
-            ]);
+            return fail('Sorry, Your blog cannot be found.', null , 404 );
+            // return response()->json([
+            //     'status' => 404,
+            //     'message' => 'Blog not found.'
+            // ]);
+        }
+
+        if(auth('sanctum')->user()->id !== $blog->user_id) {
+            return fail('Sorry, You have no permission to delete this blog.', null , 403 );
+            // return response()->json([
+            //     'status' => 403,
+            //     'message' => 'Forbidden'
+            // ]);
         }
 
         $blog->delete();
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Blog successfully deleted.'
-        ]);
+        return success('Your blog is successfully deleted.', null, 200);
+
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => 'Blog successfully deleted.'
+        // ]);
     }
 }

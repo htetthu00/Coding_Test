@@ -16,6 +16,6 @@ class Category extends Model
 
     public function Blog()
     {
-        return $this->belongsToMany(Blog::class);
+        return $this->belongsToMany(Blog::class)->withTimestamps();
     }
 }
