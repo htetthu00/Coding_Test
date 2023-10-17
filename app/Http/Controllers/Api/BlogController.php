@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use Carbon\Carbon;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use App\Http\Requests\BlogRequest;
@@ -41,7 +40,7 @@ class BlogController extends Controller
             return fail('Sorry, Your blog cannot be found.', null , 404 );
         }
 
-        return (new BlogResource($blog, auth('sanctum')->user()))
+        return (new BlogResource($blog))
             ->additional(['result' => 1, 'status' => 200, 'message' => 'Success']);
     }
 
