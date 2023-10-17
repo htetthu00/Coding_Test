@@ -22,7 +22,7 @@ class BlogResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'body' => isset($this->auth_user) ? $this->body : Str::limit($this->body, 30),
+            'body' => $this->auth_user ? $this->body : Str::limit($this->body, 30),
             'user' => new UserResource($this->User),
             'categories' => CategoryResource::collection($this->Category),
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
