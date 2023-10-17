@@ -22,7 +22,6 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'email',
-        'slug',
         'password',
     ];
 
@@ -52,8 +51,7 @@ class User extends Authenticatable
 
     public function setUsernameAttribute($value) 
     {
-        $this->attributes['username'] = $value;
-        $this->attributes['slug'] = Str::slug($value);
+        $this->attributes['username'] = str_replace(' ', '', trim($value));
     }
 
     public function Blog() 
