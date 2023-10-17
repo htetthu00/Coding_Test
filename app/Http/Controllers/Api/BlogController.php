@@ -17,7 +17,7 @@ class BlogController extends Controller
                 ->additional(['result' => 1, 'message' => 'Success']); 
         } else {
             return BlogResource::collection(Blog::with('Category:id,name')->orderBy('created_at', 'DESC')->paginate(10))
-                ->additional(['result' => 1, 'message' => 'Success']);
+                ->additional(['result' => 1, 'message' => 'Success. For more details, please login.']);
         }
     }
 
@@ -64,7 +64,7 @@ class BlogController extends Controller
                 'updated_at' => Carbon::parse($blog->updated_at)->format('Y-m-d H:i:s')
             ];
 
-            return success('Success. For more details, please login', $data, 200);
+            return success('Success. For more details, please login.', $data, 200);
         }
     }
 
