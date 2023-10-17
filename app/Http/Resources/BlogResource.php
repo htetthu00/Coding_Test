@@ -8,32 +8,25 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class BlogResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
+    protected $auth_user;
+
+    public function __construct($resource, $auth_user = null)
+    {
+        $this->auth_user = $auth_user;
+
+        parent::__construct($resource);
+    }
+
     public function toArray($request)
     {
-        if(auth('sanctum')->user()) {
-            return [
-                'id' => $this->id,
-                'title' => $this->title,
-                'body' => $this->body,
-                'user_id' => $this->user_id,
-                'categories' => $this->Category,
-                'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s')
-            ];
-        } else {
-            return [
-                'id' => $this->id,
-                'title' => $this->title,
-                'body' => Str::limit($this->body, 10),
-                'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s')
-            ];
-        }
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'body' => isset($this->auth_user) ? $this->body : Str::limit($this->body, 30),
+            'user_id' => new UserResource($this->User),
+            'categories' => CategoryResource::collection($this->Category),
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s')
+        ];
     }
 }
